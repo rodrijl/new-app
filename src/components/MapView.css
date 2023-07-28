@@ -1,0 +1,23 @@
+/* MapView.css */
+
+.map-view-container {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .map-container .leaflet-container {
+    width: 100%; /* Cambiar el ancho a lo que desees, por ejemplo, "800px" */
+  }
+
+  .map-container {
+    flex: 1;
+    z-index: 1; /* Establecer un z-index más bajo para el mapa */
+  }
+  
+  .driver-list {
+    flex: 0.3;
+    padding: 10px;
+    background-color: #f0f0f0;
+    z-index: 2; /* Establecer un z-index más alto para la lista de choferes */
+  }
+  
