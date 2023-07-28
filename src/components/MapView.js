@@ -1,43 +1,50 @@
 // MapView.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import { useDispatch, useSelector } from "react-redux";
-import { assignVenue } from "../redux/slice";
-import data from "../assets/data.json";
+
 import Markers from "./VenueMarkers";
 import DriverList from "./DriverList";
+import UserMarker from "./UserMarker";
+
+import data from "../assets/data.json";
 
 import "leaflet/dist/leaflet.css";
 import "./MapView.css";
 
+const MAP_URL = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+const ATTRIBUTION =
+  '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
+const POSITION_DEFAULT = [-34.61315, -58.37723];
+
 const MapView = () => {
+  const { venues, drivers } = data;
 
-  const {venues, drivers} = data
+  const [userPosition, setUserPosition] = useState(null);
 
-  const dispatch = useDispatch();
-
-  const handleAssignVenue = (venueName, driverName) => {
-    dispatch(assignVenue({ venueName, driverName }));
-  };
-
-  const position = [52.52437, 13.41053];
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setUserPosition([latitude, longitude]);
+      });
+    }
+  }, []);
 
   return (
     <div className="map-view-container">
       <div className="map-container">
-        <MapContainer center={position} zoom={11} style={{ height: "100vh", width: "100wh" }}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          />
-          <Markers
-            venues={venues}
-            drivers={drivers}
-          />
+        <MapContainer
+          center={userPosition || POSITION_DEFAULT}
+          zoom={13}
+          style={{ height: "100vh", width: "100wh" }}
+        >
+          <TileLayer url={MAP_URL} attribution={ATTRIBUTION} />
+          <Markers venues={venues} drivers={drivers} />
+          <UserMarker userPosition={userPosition} />
         </MapContainer>
       </div>
       <div className="driver-list">
-        <DriverList drivers={data.drivers} assignVenue={handleAssignVenue} />
+        <DriverList drivers={drivers} />
       </div>
     </div>
   );

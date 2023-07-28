@@ -1,4 +1,3 @@
-// redux/slice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const venueSlice = createSlice({
@@ -10,7 +9,6 @@ const venueSlice = createSlice({
     assignVenue(state, action) {
       const { venueName, driverName } = action.payload;
       if (!driverName) {
-        // Desasignar punto si driverName es null
         const updatedPoints = { ...state.assignedPoints };
         delete updatedPoints[venueName];
         state.assignedPoints = updatedPoints;
